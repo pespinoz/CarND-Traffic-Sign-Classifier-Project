@@ -113,31 +113,64 @@ My final model consisted of the following layers:
  
 A graphical depiction of the model is given in the next Figure (adapted from [MathWork's Convolutional Neural Network Tutorial](https://www.mathworks.com/discovery/convolutional-neural-network.html)). Note that the seven layers are identified, their dimensions are as in the Table above.
 
+<img src="./my_images/cnn_scheme.jpg" width="1500"> 
+
 ####3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
-To train the model, I used an ....s
+Most of the following hyperparameters were fine-tuned by hand, trying to assess the effect of changes while my model architecture was still the basic LeNet from a previous Lab. This might be good for qualitative purposes, however their effect on final results (accuracies) might be correlated and model architecture-dependent. The choices presented here, together with the architecture described above, lead to a validation accuracy of 0.982.
+
+* To train the model, I used an stochastic gradient-based optimization [algorithm](https://arxiv.org/abs/1412.6980) called Adam, which was already implemented in TensorFlow. The algorithm minimizes the loss over batches (and epochs of training). 
+
+* The batch size I chose was 512. If the value for this hyperparameter is too small there'll be slow convergence for the optimizer, but values larger than this proved to be computationally very expensive for my machine.
+
+* The number of epochs is set to 10, as training of the CNN must stop after a plateau of maximum training accuracy is reached. Beyond this point the model -essentially- can't keep learning features, and we have to deal with the problem of overfitting. 
+
+* The learning rate is 0.002. I began with smaller values, but increased them and found a faster convergence for the optimizer. This leads to greater validation accuracies in the initial epochs of training.
+
+* Dropout is used in Layers 5 and 6 (fully connected). I began with the value we used in the lessons, which was 0.5 but accuracies improved when I increased the hyperparameter to 0.7. For accuracy evaluation purposes, KEEP_PROB was set to 1.
+
+* The initialization of weights and biases in the convolutional and fully connected layers were set up with a mean of 0 and standard deviation of 0.1.
+
+A summary is shown in the next Table:
+
+| Hyperparameter        		|     Value				|
+|:--------------------:|:-----------------------------------------|
+| Optimizer |  Adam  |
+| Batch Size  | 512   |
+|  Epochs     | 10    |
+| Learning Rate | 0.002 |
+| Keep Probability | 0.7 |
+| Mean, StdDev | (0, 0,1) |
 
 ####4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
-My final model is inspired by the [AlexNet CNN](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks). It's composed by 4 convolutional layers (all but one with maxpool) followed by three fully connected layers. This architecture differs from AlexNet mainly due to the small dimension of our dataset images, making i) smaller layer dimensions, and ii) one less convolutional layer. We applied dropout in all but one fully-connected layer for regularization purposes.
-
 My final model results were:
-* training set accuracy of ?
-* validation set accuracy of ? 
-* test set accuracy of ?
 
-If an iterative approach was chosen:
-* What was the first architecture that was tried and why was it chosen?
-* What were some problems with the initial architecture?
-* How was the architecture adjusted and why was it adjusted? Typical adjustments could include choosing a different model architecture, adding or taking away layers (pooling, dropout, convolution, etc), using an activation function or changing the activation function. One common justification for adjusting an architecture would be due to overfitting or underfitting. A high accuracy on the training set but low accuracy on the validation set indicates over fitting; a low accuracy on both sets indicates under fitting.
-* Which parameters were tuned? How were they adjusted and why?
-* What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
+* training set accuracy of > 99.95% (approximated to the fourth decimal in my code).
+* validation set accuracy of 98.2%.
+* test set accuracy of 95.4%.
+These results were obtained in cells 13 and 19 of the notebook, under the **Train, Validate and Test the Model** title.
 
-If a well known architecture was chosen:
-* What architecture was chosen?
-* Why did you believe it would be relevant to the traffic sign application?
-* How does the final model's accuracy on the training, validation and test set provide evidence that the model is working well?
- 
+Aditionally, the evolution over time (epochs) of the training and validation accuracies is shown in the next Figure:
+
+<img src="./my_images/accuracy_evolution.png" width="1200"> 
+
+My approach for finding a solution to this problem is as follows: As stated in the previous question, I began my search by simply keeping the LeNet model architecture from a previous Lab (Udacity Lesson 8: LeNet in TensorFlow). By simply plugging it the new dataset the model worked but far from a validation accuracy of 0.93.
+
+Then I began to look for hyperparameter tweaking (see previous question discussion). At this stage I was using a very large number of epochs (50-100), and have fine-tuned the learning rate and weights parameters, but still far from the goal. The addition of grayscale and normalization preprocessing (as well as stretching the dynamic range of the images' pixels) continued to improve the situation. 
+
+At this point, and running my model with 100 epochs I was just under or equal to 0.93 for the validation accuracy. The next step was to change the model architecture.
+
+I was inspired by the [AlexNet CNN](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks), although with some differences due to the size and shape of our dataset. My final model is composed by 4 convolutional layers for learning (all but one with the convolution followed by ReLU activation and Maxpool), followed by three fully connected layers for classification. For regularization purposes we applied dropout with a keep_prob=0.7 in the first two fully-connected layers.
+
+My architecture differs from AlexNet mainly due to the small dimension of our dataset images compared to the ones with which AlexNet won the ImageNet ILSVRC challenge in 2012. Differences include implementing: 
+
+* smaller layer dimensions, 
+* one less convolutional layer in the feature learning stage.
+
+But keeps characteristics such as deeper and bigger layers than LeNet, and featured Convolutional Layers stacked on top of each other (Layers 3 and 4). 
+
+This last step of model architecture exploration, plus the addition of dropout allowed us to significantly improve accuracies reaching >98% in the Validation set. This is  well above the required 93% for this project (and only in ten epochs)
 
 ###Test a Model on New Images
 
@@ -191,15 +224,15 @@ The next Figures provides the top 5 softmax probabilities for each new image, al
 <img src="./my_images/new_images_with_toplabels_part1.jpg" width="1500"> 
 <img src="./my_images/new_images_with_toplabels_part2.jpg" width="1500"> 
 
-** (As requested in the question, I'll discuss in detail the first five images here instead of my set of twelve) . But, in summary, there's a high correlation between the certainty of the model's classification and the class representation in the data. This underlies the need for an (augmented) balanced dataset**
+** (As requested in the question, I'll discuss in detail the first five images here instead of my set of twelve) . But, in summary, there's a high correlation between the certainty of the model's classification (or distribution of soft max probabilities), and the class representation in the data. This underlies the need for an (augmented) balanced dataset whenever is possible to attain it.**
 
 * For the first image, the model has a relatively high probability of 0.25 for **General Caution** sign, and the image does contain a *General Caution*. The top five soft max probabilities are shown in the plot above.
 
 * For the second image, we have a set of 5 relatively low soft max probabilities. This is not surprising as the School Zone sign wasn't a part of the original dataset.
 
-* For the third image, the model has a very high probability of 0.42 for **Yield** sign, and the image does contain a *Yield*. The top five soft max probabilities are shown in the plot above. This means the model is quite certain the correct label is *Yield*. The reason might be it's high representation in the dataset (see [histogram of classes](https://github.com/pespinoz/CarND-Traffic-Sign-Classifier-Project/blob/master/my_images/classes_distribution.png), class 13 for the Yield sign).
+* For the third image, the model has a very high probability of 0.42 for **Yield** sign, and the image does contain a *Yield*. This means the model is quite certain the correct label is *Yield*. The reason might be it's high representation in the dataset (see [histogram of classes](https://github.com/pespinoz/CarND-Traffic-Sign-Classifier-Project/blob/master/my_images/classes_distribution.png), class 13 for the Yield sign).
 
-* For the fourth image, the model has a relatively high probability of 0.28 for **No Passing** sign, and the image does contain a *No Passing*. The top five soft max probabilities are shown in the plot above.
+* For the fourth image, there's a relatively high probability of 0.28 for **No Passing** sign, and the image does contain a *No Passing*. The top five soft max probabilities are shown in the plot above. Interestingly the distribution of soft max probabilities is similar to that of the first image. What about their representation level at the [histogram of classes](https://github.com/pespinoz/CarND-Traffic-Sign-Classifier-Project/blob/master/my_images/classes_distribution.png)? Very similar!
 
 * For the fifth image, the model has a low probability of 0.07 for **Stop** sign, and the image does contain a *Stop*. The top five soft max probabilities are shown in the plot above. The model is not certain at all it's a stop sign! The reason is the relatively low representation of this class in the dataset (see [histogram of classes](https://github.com/pespinoz/CarND-Traffic-Sign-Classifier-Project/blob/master/my_images/classes_distribution.png), class 14 for the Stop sign).
 
