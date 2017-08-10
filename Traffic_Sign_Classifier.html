@@ -31463,7 +31463,7 @@ kiRJGhSDriRJkiRpUP4Fo5upU1uNMzYAAAAASUVORK5CYII=
 <span class="c1">### If we train the CNN with color images we use the equalizeHist function from OpenCV, which  </span>
 <span class="c1">### normalizes the brightness and increases the contrast of the image.</span>
 
-<span class="c1">### I did choose to use gray-scale images for CNN training, as validation accuracy is significantly improved this way.</span>
+<span class="c1">### I did choose to use gray-scale images for CNN training, as validation accuracy is improved this way.</span>
 
 <span class="k">if</span> <span class="n">CHANNELS</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
     <span class="n">X_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">preprocessing_grayscale</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">X_train_original</span><span class="p">)))</span>
@@ -41149,7 +41149,7 @@ RK5CYII=
 <span class="c1">### got 11 correct ones, and 1 wrong. This translates into a 91.7% accuracy of the model in the new dataset.</span>
 
 <span class="c1">### However the one the model got wrong (School Sign) wasn&#39;t a part of the original dataset. Conservatively, we can</span>
-<span class="c1">### then estimate the accuracy of our CNN model between 90-100%.</span>
+<span class="c1">### then estimate the accuracy of our CNN model between 92-100%.</span>
 
 <span class="n">correct</span> <span class="o">=</span> <span class="mi">11</span>
 <span class="n">wrong</span>   <span class="o">=</span> <span class="mi">1</span>
