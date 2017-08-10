@@ -224,7 +224,7 @@ The next Figures provides the top 5 softmax probabilities for each new image, al
 <img src="./my_images/new_images_with_toplabels_part1.jpg" width="1500"> 
 <img src="./my_images/new_images_with_toplabels_part2.jpg" width="1500"> 
 
-** (As requested in the question, I'll discuss in detail the first five images here instead of my set of twelve) . But, in summary, there's a high correlation between the certainty of the model's classification (or distribution of soft max probabilities), and the class representation in the data. This underlies the need for an (augmented) balanced dataset whenever is possible to attain it.**
+**(As requested in the question, I'll discuss in detail the first five images here instead of my set of twelve) . But, in summary, there's a high correlation between the certainty of the model's classification (or distribution of soft max probabilities), and the class representation in the data. This underlies the need for an (augmented) balanced dataset whenever is possible to attain it**.
 
 * For the first image, the model has a relatively high probability of 0.25 for **General Caution** sign, and the image does contain a *General Caution*. The top five soft max probabilities are shown in the plot above.
 
@@ -238,6 +238,6 @@ The next Figures provides the top 5 softmax probabilities for each new image, al
 
 
 ### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
-####1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
+#### 1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
 
 
